@@ -46,20 +46,6 @@ const User = sequelize.define('user', {
         type: DataTypes.DATEONLY,
         isDate: true,
         allowNull: false,
-        // validate:{
-        //     // greaterThanOr18(value){
-        //     //     var today = new Date();
-        //     //     var birthDate = Date.parse(value);
-        //     //     var age = today.getFullYear() - birthDate.getFullYear();
-        //     //     var m = today.getMonth() - birthDate.getMonth();
-        //     //     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        //     //         age--;
-        //     //     }
-        //     //     if(age<18){
-        //     //         throw new Error("Age can't be less than 18");
-        //     //     }
-        //     // }
-        // }
     },
     role:{
         type: DataTypes.STRING,

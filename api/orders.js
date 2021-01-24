@@ -3,27 +3,36 @@ const router = express.Router();
 
 const Order = require('../models/orders');
 
-router.get('/', (req, res) => {
-    Order.findAll()
-      .then(orders => res.json(orders))
-      .catch(err => console.log(err));
+//GET all orders
+router.get('/', async (req, res) => {
+    try{
+      const orders = await Order.findAll();
+      res.json(orders);
+    }
+    catch(err){
+      res.json({msg: err});
+    }
+  });
+
+//GET order by id
+router.get('/:orderId', async (req, res) => {
+    try{
+      const order = await Order.findByPk(req.params.orderId);
+      res.json(order);
+    }
+    catch(err){
+      res.json({msg: err});
+    }
 });
 
-router.get('/:id', (req, res) => {
-    Order.findByPk(req.params.id)
-      .then(order => res.json(order))
-      .catch(err => console.log(err));
-});
-
-router.delete('/:id', (req, res) => {
-    Order.findByPk(req.params.id)
-        .then(order => {
-          order.destroy()
-            .then(() => {
-              console.log('Order deleted');
-              res.json(order)
-            })
-            .catch(err => console.log(err));
-        })
-        .catch(error => console.log(error));
-});
+// DELETE order by id
+router.delete('/:orderId', async (req, res) => {
+    try{
+      const order = await Order.findByPk(req.params.orderId);
+      await order.destroy();
+      res.json(order);
+    }
+    catch(err){
+      res.json({msg: err});
+    }
+  });

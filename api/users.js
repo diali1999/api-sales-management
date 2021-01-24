@@ -2,9 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../models/users');
+const passwordValidation = require('../validation');
 
 const saltRounds = 10;
 
+// GET all users
 router.get('/', async (req, res) => {
   try{
     const users = await User.findAll();
@@ -15,10 +17,13 @@ router.get('/', async (req, res) => {
   }
 });
 
+//POST new user
 router.post('/', async (req, res) => {
-    bcrypt.hash(req.body.password, saltRounds, async (err, hashedPassword) => {
-      if (err){
-        console.log(err);
+    const {error} = passwordValidation({password:req.body.password});
+    if(error) return res.status(400).send(error.details[0].message);
+    bcrypt.hash(req.body.password, saltRounds, async (encryptErr, hashedPassword) => {
+      if (encryptErr){
+        res.json({msg: encryptErr})
       }
       else{
         try{
@@ -37,16 +42,17 @@ router.post('/', async (req, res) => {
           });
           res.json(newUser);
         }
-        catch(error){
-          res.json({msg: error});
+        catch(err){
+          res.json({msg: err});
         }
       }
     });
 });
 
-router.get('/:id', async (req, res) => {
+//GET user by id
+router.get('/:userId', async (req, res) => {
   try{
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(req.params.userId);
     res.json(user);
   }
   catch(err){
@@ -54,9 +60,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE user by id
+router.delete('/:userId', async (req, res) => {
   try{
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(req.params.userId);
     await user.destroy();
     res.json(user);
   }

@@ -1,16 +1,22 @@
 const express = require('express');
 const {Sequelize} = require('sequelize');
+const cors = require('cors');
 
 const app = express();
 
-require('dotenv');
+//Config load
+require('dotenv').config();
 
+//Middlewares
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Import routes
 const usersRoute = require('./api/users');
+const apiRoute = require('./api/index');
 
+app.use('/api', apiRoute);
 app.use('/api/users/', usersRoute);
 
 const port = process.env.PORT || 5000;
