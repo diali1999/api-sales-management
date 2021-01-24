@@ -1,12 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const {Sequelize} = require('sequelize');
 
 const app = express();
 
 require('dotenv');
 
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Import routes
 const usersRoute = require('./api/users');
 
