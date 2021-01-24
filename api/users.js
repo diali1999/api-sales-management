@@ -5,59 +5,64 @@ const User = require('../models/users');
 
 const saltRounds = 10;
 
-router.get('/', (req, res) => {
-    User.findAll()
-      .then(users => {
-        res.json(users);
-      });
+router.get('/', async (req, res) => {
+  try{
+    const users = await User.findAll();
+    res.json(users);
+  }
+  catch(err){
+    res.json({msg: err});
+  }
 });
 
-router.post('/', (req, res) => {
-    bcrypt.hash(req.body.password, saltRounds, (err, hashedPassword) => {
-        if (err){
-          console.log(error);
+router.post('/', async (req, res) => {
+    bcrypt.hash(req.body.password, saltRounds, async (err, hashedPassword) => {
+      if (err){
+        console.log(err);
+      }
+      else{
+        try{
+          const newUser =  await User.create({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            phone: req.body.phone,
+            email: req.body.email,
+            hashedPassword: hashedPassword,
+            DOB: req.body.DOB,
+            role: req.body.role,
+            department: req.body.department,
+            DOJ: req.body.DOJ,
+            createdAt: new Date().getTime(),
+            updatedAt: new Date().getTime(),
+          });
+          res.json(newUser);
         }
-        else{
-            (async() => {
-                await User.create({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                phone: req.body.phone,
-                email: req.body.email,
-                hashedPassword: hashedPassword,
-                DOB: req.body.DOB,
-                role: req.body.role,
-                department: req.body.department,
-                DOJ: req.body.DOJ,
-                createdAt: new Date().getTime(),
-                updatedAt: new Date().getTime(),
-                }).then((data) => {
-                    console.log('User created succesfully!');
-                    res.json(data.toJSON());
-                })
-                .catch(error => console.log(error));
-            })();
+        catch(error){
+          res.json({msg: error});
         }
-      });
+      }
+    });
 });
 
-router.get('/:id', (req, res) => {
-    User.findByPk(req.params.id)
-      .then(user => {
-        res.json(user);
-      });
+router.get('/:id', async (req, res) => {
+  try{
+    const user = await User.findByPk(req.params.id);
+    res.json(user);
+  }
+  catch(err){
+    res.json({msg: err});
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  User.findByPk(req.params.id)
-    .then(user => {
-      user.destroy()
-        .then(() => {
-          console.log('User deleted');
-          res.json(user)
-        })
-        .catch(err => console.log(err));
-    }).catch(error => console.log(error));
+router.delete('/:id', async (req, res) => {
+  try{
+    const user = await User.findByPk(req.params.id);
+    await user.destroy();
+    res.json(user);
+  }
+  catch(err){
+    res.json({msg: err});
+  }
 });
 
 module.exports = router;
