@@ -7,10 +7,15 @@ const {verifyUser, verifyAdmin} = require('./verifyToken');
 
 const saltRounds = 10;
 
+const getCleanUser = async (id) => {
+  const user = await User.findByPk(id, {attributes:{exclude: ['hashedPassword']}});
+  return user;
+}
+
 // GET all users
 router.get('/', verifyAdmin, async (req, res) => {
   try{
-    const users = await User.findAll();
+    const users = await User.findAll({attributes:{exclude: ['hashedPassword']}});
     res.json(users);
   }
   catch(err){
@@ -41,7 +46,8 @@ router.post('/', verifyAdmin, async (req, res) => {
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime(),
           });
-          res.json(newUser);
+          const cleanUser = await getCleanUser(newUser.id);
+          res.json(cleanUser);
         }
         catch(err){
           res.json({msg: err.errors[0].message});
@@ -54,12 +60,12 @@ router.post('/', verifyAdmin, async (req, res) => {
 router.get('/:userId', verifyUser, async (req, res) => {
   try{
     if(req.user.role=='Admin'){
-      const user = await User.findByPk(req.params.userId);
+      const user = await getCleanUser(req.params.userId);
       res.json(user);
     }
     else {
-      if(req.params.id == req.user.id){
-        const user = await User.findByPk(req.user.id);
+      if(req.params.userId == req.user.id){
+        const user = await getCleanUser(req.params.userId);
         res.json(user);
       }
       else{
@@ -77,7 +83,7 @@ router.delete('/:userId', verifyAdmin, async (req, res) => {
   try{
     const user = await User.findByPk(req.params.userId);
     await user.destroy();
-    res.json(user);
+    res.json({msg: 'User deleted!'});
   }
   catch(err){
     res.json({msg: err});

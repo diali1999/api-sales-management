@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {verifyUser, verfiyAdmin} = require('./verify');
+const {verifyUser, verifyAdmin} = require('./verify');
 const Order = require('../models/orders');
 
 //GET all orders
