@@ -3,11 +3,12 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../models/users');
 const passwordValidation = require('../validation');
+const verify = require('./verifyToken');
 
 const saltRounds = 10;
 
 // GET all users
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
   try{
     const users = await User.findAll();
     res.json(users);
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
 });
 
 //POST new user
-router.post('/', async (req, res) => {
+router.post('/', verify, async (req, res) => {
     const {error} = passwordValidation({password:req.body.password});
     if(error) return res.status(400).send(error.details[0].message);
     bcrypt.hash(req.body.password, saltRounds, async (encryptErr, hashedPassword) => {
@@ -43,14 +44,14 @@ router.post('/', async (req, res) => {
           res.json(newUser);
         }
         catch(err){
-          res.json({msg: err});
+          res.json({msg: err.errors[0].message});
         }
       }
     });
 });
 
 //GET user by id
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', verify, async (req, res) => {
   try{
     const user = await User.findByPk(req.params.userId);
     res.json(user);
@@ -61,7 +62,7 @@ router.get('/:userId', async (req, res) => {
 });
 
 // DELETE user by id
-router.delete('/:userId', async (req, res) => {
+router.delete('/:userId', verify, async (req, res) => {
   try{
     const user = await User.findByPk(req.params.userId);
     await user.destroy();
