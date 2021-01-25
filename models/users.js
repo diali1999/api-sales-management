@@ -13,6 +13,21 @@ const User = sequelize.define('user', {
         autoIncrement: true,
         primaryKey: true
     },
+    firstName:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    lastName:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    gender:{
+        type: DataTypes.STRING,
+        allowNull:false,
+        validate:{
+            is: /^[MFCT]{1}$/
+        }
+    },
     hashedPassword:{
         type: DataTypes.STRING(60),
         validate:{
@@ -24,14 +39,6 @@ const User = sequelize.define('user', {
         validate: {
             is: /^[6-9][0-9]{9}$/
         }
-    },
-    firstName:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName:{
-        type: DataTypes.STRING,
-        allowNull: false
     },
     email:{
         type: DataTypes.STRING,

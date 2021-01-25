@@ -39,6 +39,7 @@ router.post('/', verifyAdmin, async (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             phone: req.body.phone,
+            gender: req.body.gender,
             email: req.body.email,
             hashedPassword: hashedPassword,
             DOB: req.body.DOB,

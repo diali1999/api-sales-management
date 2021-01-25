@@ -39,3 +39,5 @@ router.delete('/:orderId', verifyAdmin, async (req, res) => {
       res.json({msg: err});
     }
   });
+
+module.exports = router;
