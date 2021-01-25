@@ -3,9 +3,11 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../models/users');
 const passwordValidation = require('../validation');
-const {verifyUser, verifyAdmin} = require('./verifyToken');
+const {verifyAdmin, verifyUser, authMiddleware} = require('./verifyToken');
 
 const saltRounds = 10;
+
+router.use(authMiddleware);
 
 const getCleanUser = async (id) => {
   const user = await User.findByPk(id, {attributes:{exclude: ['hashedPassword']}});

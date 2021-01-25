@@ -1,16 +1,45 @@
 const jwt = require('jsonwebtoken');
+const {handleResponse, refreshTokens, verifyToken} = require('./utils');
+
+const authMiddleware = function (req, res, next) {
+    // check header or url parameters or post parameters for token
+    var token = req.headers['authorization'];
+    if (!token) return handleResponse(req, res, 401);
+   
+    token = token.replace('Bearer ', '');
+   
+    // get xsrf token from the header
+    const xsrfToken = req.headers['x-xsrf-token'];
+    if (!xsrfToken) {
+      return handleResponse(req, res, 403);
+    }
+   
+    // verify xsrf token
+    const { signedCookies = {} } = req;
+    const { refreshToken } = signedCookies;
+    if (!refreshToken || !(refreshToken in refreshTokens) || refreshTokens[refreshToken] !== xsrfToken) {
+      return handleResponse(req, res, 401);
+    }
+   
+    // verify token with secret key and xsrf token
+    verifyToken(token, xsrfToken, (err, payload) => {
+      if (err)
+        return handleResponse(req, res, 401);
+      else {
+        req.user = payload; //set the user to req so other routes can use it
+        next();
+      }
+    });
+}
 
 const verifyUser = (req, res, next) => {
-    const token = req.header('auth-token');
-    if(!token) return res.status(401).send('Access Denied!');
     try{
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-        if(verified.role == 'User'|| verified.role=='Admin'){
-            req.user = verified;
+        const role = req.user.role;
+        if(role == 'User'|| role=='Admin'){
             next();
         }
         else{
-            return res.status(401).send('Access Denied!');
+            return handleResponse(req, res, 403);
         }
     }
     catch(err){
@@ -19,16 +48,12 @@ const verifyUser = (req, res, next) => {
 }
 
 const verifyAdmin = (req, res, next) => {
-    const token = req.header('auth-token');
-    if(!token) return res.status(401).send('Access Denied!');
     try{
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-        if(verified.role == 'Admin'){
-            req.user = verified;
+        if(req.user.role == 'Admin'){
             next();
         }
         else{
-            return res.status(401).send('Access Denied!');
+            return handleResponse(req, res, 403);
         }
     }
     catch(err){
@@ -36,4 +61,4 @@ const verifyAdmin = (req, res, next) => {
     }
 }
 
-module.exports = {verifyUser, verifyAdmin};
+module.exports = {verifyUser, verifyAdmin, authMiddleware};

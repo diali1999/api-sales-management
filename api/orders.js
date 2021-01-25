@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const {verifyUser, verifyAdmin} = require('./verify');
+const {verifyUser, verifyAdmin, authMiddleware} = require('./verify');
 const Order = require('../models/orders');
+
+router.use(authMiddleware);
 
 //GET all orders
 router.get('/', verifyAdmin, async (req, res) => {

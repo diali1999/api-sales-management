@@ -1,6 +1,7 @@
 const express = require('express');
 const {Sequelize} = require('sequelize');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -11,6 +12,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Import routes
 const usersRoute = require('./api/users');
