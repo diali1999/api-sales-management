@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const verify = require('./verify');
+const {verifyUser, verfiyAdmin} = require('./verify');
 const Order = require('../models/orders');
 
 //GET all orders
-router.get('/', verify, async (req, res) => {
+router.get('/', verifyAdmin, async (req, res) => {
     try{
       const orders = await Order.findAll();
       res.json(orders);
@@ -16,7 +16,7 @@ router.get('/', verify, async (req, res) => {
   });
 
 //GET order by id
-router.get('/:orderId', verify, async (req, res) => {
+router.get('/:orderId', verifyAdmin, async (req, res) => {
     try{
       const order = await Order.findByPk(req.params.orderId);
       res.json(order);
@@ -27,7 +27,7 @@ router.get('/:orderId', verify, async (req, res) => {
 });
 
 // DELETE order by id
-router.delete('/:orderId', verify, async (req, res) => {
+router.delete('/:orderId', verifyAdmin, async (req, res) => {
     try{
       const order = await Order.findByPk(req.params.orderId);
       await order.destroy();
