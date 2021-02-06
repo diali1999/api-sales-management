@@ -4,16 +4,6 @@ const dayjs = require('dayjs');
 
 const dev = process.env.NODE_ENV !== 'production';
 
-// refresh token list to manage the xsrf token
-const refreshTokens = {};
-
-// cookie options to create refresh token
-const COOKIE_OPTIONS = {
-    httpOnly: true,
-    secure: !dev,
-    signed: true
-};
-
 // generate tokens and return it
 const generateToken = (user) => {
     if(!user) return null;
@@ -22,9 +12,7 @@ const generateToken = (user) => {
         name: user.firstName + ' ' + user.lastName,
         role: user.role
     };
-    const xsrfToken = randtoken.generate(24);
-    // create private key by combining JWT secret and xsrf token
-    const privateKey = process.env.JWT_SECRET + xsrfToken;
+    const privateKey = process.env.JWT_SECRET;
 
     const token = jwt.sign(u, privateKey, {expiresIn: process.env.ACCESS_TOKEN_LIFE+'m'});
 
@@ -34,18 +22,10 @@ const generateToken = (user) => {
     return {
         token,
         expiredAt,
-        xsrfToken
     }
 }
 
-// generate refresh token
-
-const generateRefreshToken = (userId) =>{
-    if(!userId) return null;
-    return jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: process.env.REFRESH_TOKEN_LIFE+'d'});
-}
-
-function getCleanUser(user) {
+function getTokenUser(user) {
     if (!user) return null;
    
     return {
@@ -58,18 +38,9 @@ function getCleanUser(user) {
   
 
 // verify access token and refresh token
-function verifyToken(token, xsrfToken, cb) {
-    const privateKey = process.env.JWT_SECRET + (xsrfToken || '');
+function verifyToken(token, cb) {
+    const privateKey = process.env.JWT_SECRET;
     jwt.verify(token, privateKey, cb);
-}
-
-// clear tokens from cookie
-function clearTokens(req, res) {
-    const { signedCookies = {} } = req;
-    const { refreshToken } = signedCookies;
-    delete refreshTokens[refreshToken];
-    res.clearCookie('XSRF-TOKEN');
-    res.clearCookie('refreshToken', COOKIE_OPTIONS);
 }
 
 // handle the API response
@@ -85,12 +56,10 @@ function handleResponse(req, res, statusCode, data, message) {
       case 401:
         isError = true;
         errorMessage = message || 'Invalid user.';
-        clearTokens(req, res);
         break;
       case 403:
         isError = true;
         errorMessage = message || 'Access to this resource is denied.';
-        clearTokens(req, res);
         break;
       default:
         break;
@@ -103,4 +72,4 @@ function handleResponse(req, res, statusCode, data, message) {
     return res.status(statusCode).json(resObj);
 }
 
-module.exports = {clearTokens, COOKIE_OPTIONS, generateRefreshToken, generateToken, getCleanUser,  handleResponse, refreshTokens, verifyToken};
+module.exports = {generateToken, getTokenUser,  handleResponse, verifyToken};

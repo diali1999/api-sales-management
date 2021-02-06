@@ -28,6 +28,10 @@ const User = sequelize.define('user', {
             is: /^[MFCT]{1}$/
         }
     },
+    salary:{
+        type: DataTypes.INTEGER,
+        allowNull:true,
+    },
     hashedPassword:{
         type: DataTypes.STRING(60),
         validate:{
@@ -78,5 +82,7 @@ const User = sequelize.define('user', {
             console.log('User table created successfully.')
         })
 })();
+
+// User.hasMany(Order);
 
 module.exports = User;

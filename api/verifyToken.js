@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
-const {handleResponse, refreshTokens, verifyToken} = require('./utils');
+const {handleResponse, verifyToken} = require('./utils');
+
+
 
 const authMiddleware = function (req, res, next) {
     // check header or url parameters or post parameters for token
@@ -8,21 +10,8 @@ const authMiddleware = function (req, res, next) {
    
     token = token.replace('Bearer ', '');
    
-    // get xsrf token from the header
-    const xsrfToken = req.headers['x-xsrf-token'];
-    if (!xsrfToken) {
-      return handleResponse(req, res, 403);
-    }
-   
-    // verify xsrf token
-    const { signedCookies = {} } = req;
-    const { refreshToken } = signedCookies;
-    if (!refreshToken || !(refreshToken in refreshTokens) || refreshTokens[refreshToken] !== xsrfToken) {
-      return handleResponse(req, res, 401);
-    }
-   
     // verify token with secret key and xsrf token
-    verifyToken(token, xsrfToken, (err, payload) => {
+    verifyToken(token, (err, payload) => {
       if (err)
         return handleResponse(req, res, 401);
       else {

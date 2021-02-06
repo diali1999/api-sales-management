@@ -26,7 +26,7 @@ router.get('/', verifyAdmin, async (req, res) => {
 });
 
 //POST new user
-router.post('/', verifyAdmin, async (req, res) => {
+router.post('/',  verifyAdmin, async (req, res) => {
     const {error} = passwordValidation({password:req.body.password});
     if(error) return res.status(400).send(error.details[0].message);
     bcrypt.hash(req.body.password, saltRounds, async (encryptErr, hashedPassword) => {
@@ -43,6 +43,7 @@ router.post('/', verifyAdmin, async (req, res) => {
             email: req.body.email,
             hashedPassword: hashedPassword,
             DOB: req.body.DOB,
+            salary: req.body.salary,
             role: req.body.role,
             department: req.body.department,
             DOJ: req.body.DOJ,
@@ -65,7 +66,7 @@ router.get('/:userId', verifyUser, async (req, res) => {
     if(req.user.role=='Admin'){
       const user = await getCleanUser(req.params.userId);
       res.json(user);
-    }
+    } 
     else {
       if(req.params.userId == req.user.id){
         const user = await getCleanUser(req.params.userId);

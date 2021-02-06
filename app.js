@@ -19,7 +19,7 @@ const usersRoute = require('./api/users');
 const apiRoute = require('./api/index');
 
 app.use('/api', apiRoute);
-app.use('/api/users/', usersRoute);
+app.use('/api/users', usersRoute);
 
 const port = process.env.PORT || 5000;
 
