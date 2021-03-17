@@ -26,11 +26,13 @@ const usersRoute = require('./api/users');
 const apiRoute = require('./api/index');
 const expenseRoute = require('./api/expense_report');
 const qrRoute = require('./api/qr');
+const workingRoute = require('./api/working_report');
 
 app.use('/api', apiRoute);
 app.use('/api/users', usersRoute);
 app.use('/api/expense_report',expenseRoute);
 app.use('/api/qr', qrRoute);
+app.use('/api/working_report', workingRoute);
 
 const port = process.env.PORT || 5000;
 

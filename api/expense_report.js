@@ -55,6 +55,7 @@ router.post('/', verifyUser,  async (req, res) => {
               expense: req.body.expense,
               date: req.body.date,
               status: req.body.status,
+              remarks:req.body.remarks,
               createdAt: new Date().getTime(),
               updatedAt: new Date().getTime(),
           });
