@@ -2,11 +2,18 @@ const express = require('express');
 const {Sequelize} = require('sequelize');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 
 //Config load
 require('dotenv').config();
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET 
+});
 
 //Middlewares
 app.use(cors());
@@ -17,9 +24,13 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 // Import routes
 const usersRoute = require('./api/users');
 const apiRoute = require('./api/index');
+const expenseRoute = require('./api/expense_report');
+const qrRoute = require('./api/qr');
 
 app.use('/api', apiRoute);
 app.use('/api/users', usersRoute);
+app.use('/api/expense_report',expenseRoute);
+app.use('/api/qr', qrRoute);
 
 const port = process.env.PORT || 5000;
 

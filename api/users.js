@@ -15,10 +15,16 @@ const getCleanUser = async (id) => {
 }
 
 // GET all users
-router.get('/', verifyAdmin, async (req, res) => {
+router.get('/',  verifyUser, async (req, res) => {
   try{
-    const users = await User.findAll({attributes:{exclude: ['hashedPassword']}});
-    res.json(users);
+    if(req.user.role=='User'){
+      const user = [await getCleanUser(req.user.userId)];
+      res.json(user);
+    } 
+    else{
+      const users = await User.findAll({attributes:{exclude: ['hashedPassword']}});
+      res.json(users);
+    }
   }
   catch(err){
     res.json({msg: err});
@@ -68,7 +74,7 @@ router.get('/:userId', verifyUser, async (req, res) => {
       res.json(user);
     } 
     else {
-      if(req.params.userId == req.user.id){
+      if(req.params.userId == req.user.userId){
         const user = await getCleanUser(req.params.userId);
         res.json(user);
       }
@@ -89,6 +95,32 @@ router.delete('/:userId', verifyAdmin, async (req, res) => {
     await user.destroy();
     res.json({msg: 'User deleted!'});
   }
+  catch(err){
+    res.json({msg: err});
+  }
+});
+
+router.put('/:orderId', verifyUser, async ( req, res) => {
+  try{
+    if(req.user.role=='Admin'){
+      Order.update(
+        req.body ,
+      {
+        where: {id: req.params.orderId}
+      }).then(() => res.json({msg: "successfully updated!!"}));
+    }
+      else{
+        const cleanOrder = await getCleanOrder(req.params.orderId);
+        if(cleanOrder.userId==req.user.userId){
+          Order.update(
+          req.body ,
+          {
+            where: {id: req.params.orderId}
+          }).then(() => res.json({msg: "successfully updated!!"}));
+         }
+      }
+    }
+
   catch(err){
     res.json({msg: err});
   }

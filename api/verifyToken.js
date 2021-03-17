@@ -39,6 +39,7 @@ const verifyUser = (req, res, next) => {
 const verifyAdmin = (req, res, next) => {
     try{
         if(req.user.role == 'Admin'){
+            console.log('Done');
             next();
         }
         else{
