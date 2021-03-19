@@ -13,19 +13,25 @@ const Order = sequelize.define('order', {
         autoIncrement: true,
         primaryKey: true
     },
-    empid:{
+    userId:{
         type: Sequelize.INTEGER(11).UNSIGNED,
         allowNull: false,
-        references:{
-            model:'user',
-            key:'id'
+    },
+    product: {
+        type: DataTypes.JSON,
+        defaultValue: '[]',
+        allowNull: false, 
+        get: function() {
+          return JSON.parse(this.getDataValue("product"));
+        },
+        set: function(value) {
+          return this.setDataValue("product", JSON.stringify(value));
         }
     },
-    status: { 
+    status:{
         type: Sequelize.ENUM,
         values: ['in queue', 'processed', 'cancelled'],
         allowNull: false,
-        defaultValue: 'in queue'
     },
     date:{
         type:DataTypes.DATEONLY,
@@ -45,4 +51,4 @@ const Order = sequelize.define('order', {
         })
 })();
 
-module.exports = Order; 
+module.exports = Order;
