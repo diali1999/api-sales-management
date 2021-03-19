@@ -100,25 +100,13 @@ router.delete('/:userId', verifyAdmin, async (req, res) => {
   }
 });
 
-router.put('/:orderId', verifyUser, async ( req, res) => {
+router.put('/:userId', verifyAdmin, async ( req, res) => {
   try{
-    if(req.user.role=='Admin'){
-      Order.update(
+      User.update(
         req.body ,
       {
-        where: {id: req.params.orderId}
+        where: {id: req.params.userId}
       }).then(() => res.json({msg: "successfully updated!!"}));
-    }
-      else{
-        const cleanOrder = await getCleanOrder(req.params.orderId);
-        if(cleanOrder.userId==req.user.userId){
-          Order.update(
-          req.body ,
-          {
-            where: {id: req.params.orderId}
-          }).then(() => res.json({msg: "successfully updated!!"}));
-         }
-      }
     }
 
   catch(err){
