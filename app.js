@@ -24,12 +24,14 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 // Import routes
 const usersRoute = require('./api/users');
 const apiRoute = require('./api/index');
+const ordersRoute = require('./api/orders');
 const expenseRoute = require('./api/expense_report');
 const qrRoute = require('./api/qr');
 const workingRoute = require('./api/working_report');
 
 app.use('/api', apiRoute);
 app.use('/api/users', usersRoute);
+app.use('/api/orders', ordersRoute);
 app.use('/api/expense_report',expenseRoute);
 app.use('/api/qr', qrRoute);
 app.use('/api/working_report', workingRoute);
