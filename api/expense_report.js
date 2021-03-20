@@ -10,10 +10,19 @@ const getCleanReport = async (id) => {
   return expense_report;
 }
 //GET all reports
-router.get('/', verifyAdmin, async (req, res) => {
-    try{
-      const expense_report = await Expense_report.findAll();
-      res.json(expense_report);
+router.get('/', verifyUser, async (req, res) => {
+  try{
+    if(req.user.role=='User'){
+      const report = await Expense_report.findAll({
+              where:{user_id: req.user.userId}
+      });
+      console.log(report);
+      res.json(report);
+    }
+    else{
+      const report = await Expense_report.findAll();
+      res.json(report);
+    }
     }
     catch(err){
       res.json({msg: err});
