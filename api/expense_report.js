@@ -59,7 +59,7 @@ router.post('/', verifyUser,  async (req, res) => {
           else {
             if(req.params.userId == req.user.id){
             const newReport =  await Expense_report.create({
-              user_id: req.user.userId,
+              userId: req.user.userId,
               type: req.body.type,
               expense: req.body.expense,
               date: req.body.date,
