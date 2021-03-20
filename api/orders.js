@@ -11,15 +11,23 @@ const getCleanOrder = async (id) => {
   return order;
 }
 //GET all orders
-router.get('/', verifyAdmin, async (req, res) => {
-    try{
-      const orders = await Order.findAll();
-      res.json(orders);
+router.get('/', verifyUser, async (req, res) => {
+  try{
+    if(req.user.role=='User'){
+      const order = await Order.findAll({
+              where:{userId: req.user.userId}
+      });
+      console.log(order);
+      res.json(order);
     }
-    catch(err){
-      res.json({msg: err});
+    else{
+      const order = await Order.findAll();
+      res.json(order);  }
     }
-  });
+  catch(err){
+    res.json({msg: err});
+  }
+});
 
 //GET order by id
 router.get('/:orderId', verifyUser, async (req, res) => {
