@@ -13,7 +13,7 @@ const Expense_report = sequelize.define('expense_report', {
         autoIncrement: true,
         primaryKey: true
     },
-    user_id:{
+    userId:{
         type: Sequelize.INTEGER(11).UNSIGNED,
         allowNull: false,
     },

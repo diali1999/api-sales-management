@@ -14,7 +14,7 @@ router.get('/', verifyUser, async (req, res) => {
     try{
       if(req.user.role=='User'){
         const report = await Work_report.findAll({
-                where:{user_id: req.user.userId}
+                where:{userId: req.user.userId}
         });
         console.log(report);
         res.json(report);
@@ -58,7 +58,7 @@ router.post('/', verifyUser,  async (req, res) => {
           } 
           else {
             const newReport =  await Work_report.create({
-            user_id: req.user.userId,
+            userId: req.user.userId,
             destination: req.body.destination,
             longitude: req.body.longitude,
             latitude:req.body.latitude,
