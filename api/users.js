@@ -33,6 +33,7 @@ router.get('/',  verifyUser, async (req, res) => {
 
 //POST new user
 router.post('/',  verifyAdmin, async (req, res) => {
+  console.log(req.body);
     const {error} = passwordValidation({password:req.body.password});
     if(error) return res.status(400).send(error.details[0].message);
     bcrypt.hash(req.body.password, saltRounds, async (encryptErr, hashedPassword) => {
@@ -41,6 +42,7 @@ router.post('/',  verifyAdmin, async (req, res) => {
       }
       else{
         try{
+           console.log(req.body);
           const newUser =  await User.create({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
