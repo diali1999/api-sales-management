@@ -21,7 +21,6 @@ router.get('/', verifyUser, async (req, res) => {
     }
     else{
       const order = await Order.findAll();
-      console.log(order);
       res.json(order);  }
     }
   catch(err){
@@ -117,7 +116,7 @@ router.post('/status', verifyUser, async (req, res)=>{
       status = 'processed';
   }
   else{
-    status = (status == 'in queue'? 'processed':'in queue');
+    status = (status == 'in queue'? 'cancelled':'in queue');
   }
   await Order.update({status},{
       where:{
