@@ -58,6 +58,7 @@ router.post('/', verifyUser, async (req, res) => {
             res.status(401).send('Can\'t post!');
         } 
         else {
+          console.log(req.body);
             const newOrder =  await Order.create({
             userId: req.user.userId,
             status: req.body.status,
@@ -99,6 +100,31 @@ router.put('/:orderId', verifyUser, async ( req, res) => {
   catch(err){
     res.json({msg: "update failed!!"});
   }
+});
+
+router.post('/status', verifyUser, async (req, res)=>{
+  const orderId = req.body.id;
+  console.log(orderId);
+  const order = await Order.findByPk(orderId);
+  let status = order.status ;
+  if(req.user.role == 'Admin')
+  {
+    if(status == 'processed')
+      status = 'in queue';
+    else if(status == 'in queue')
+      status = 'cancelled';
+    else
+      status = 'processed';
+  }
+  else{
+    status = (status == 'in queue'? 'processed':'in queue');
+  }
+  await Order.update({status},{
+      where:{
+          id:orderId,
+      }
+  });
+  res.json(order);
 });
 
 module.exports = router;
