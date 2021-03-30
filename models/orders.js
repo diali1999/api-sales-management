@@ -30,6 +30,7 @@ const Order = sequelize.define('order', {
     },
     status:{
         type: Sequelize.ENUM,
+        defaultValue : 'in queue',
         values: ['in queue', 'processed', 'cancelled'],
         allowNull: false,
     },
