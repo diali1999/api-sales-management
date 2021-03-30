@@ -17,11 +17,11 @@ router.get('/', verifyUser, async (req, res) => {
       const order = await Order.findAll({
               where:{userId: req.user.userId}
       });
-      console.log(order);
       res.json(order);
     }
     else{
       const order = await Order.findAll();
+      console.log(order);
       res.json(order);  }
     }
   catch(err){
@@ -58,12 +58,12 @@ router.post('/', verifyUser, async (req, res) => {
             res.status(401).send('Can\'t post!');
         } 
         else {
-          console.log(req.body);
             const newOrder =  await Order.create({
             userId: req.user.userId,
             status: req.body.status,
             date: req.body.date,
             product: req.body.product,
+            customer: req.body.customer,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime(),
           });

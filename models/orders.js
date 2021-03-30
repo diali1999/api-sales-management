@@ -17,6 +17,10 @@ const Order = sequelize.define('order', {
         type: Sequelize.INTEGER(11).UNSIGNED,
         allowNull: false,
     },
+    customer:{
+        type: Sequelize.STRING,
+        required: true,
+    },
     product: {
         type: DataTypes.JSON,
         defaultValue: '[]',
