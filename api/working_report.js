@@ -16,7 +16,6 @@ router.get('/', verifyUser, async (req, res) => {
         const report = await Work_report.findAll({
                 where:{userId: req.user.userId}
         });
-        console.log(report);
         res.json(report);
       }
       else{
