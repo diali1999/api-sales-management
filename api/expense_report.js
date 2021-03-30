@@ -12,9 +12,10 @@ const getCleanReport = async (id) => {
 //GET all reports
 router.get('/', verifyUser, async (req, res) => {
   try{
-    if(req.user.role=='User'){
+    if(req.user.role =='User'){
+      console.log(req.user);
       const report = await Expense_report.findAll({
-              where:{user_id: req.user.userId}
+              where:{userId: req.user.userId}
       });
       console.log(report);
       res.json(report);
@@ -25,6 +26,7 @@ router.get('/', verifyUser, async (req, res) => {
     }
     }
     catch(err){
+      console.log(err);
       res.json({msg: err});
     }
   });
@@ -37,7 +39,7 @@ router.get('/:reportId', verifyUser, async (req, res) => {
       res.json(expense_report);
     } 
     else {
-      if(req.params.userId == req.user.id){
+      if(req.params.userId == req.user.userId){
         const expense_report = await getCleanReport(req.params.reportId);
         res.json(expense_report);
        }
@@ -52,12 +54,14 @@ router.get('/:reportId', verifyUser, async (req, res) => {
 });
 
 router.post('/', verifyUser,  async (req, res) => {
+console.log(req.body);
         try{
+          console.log(req.user);
           if(req.user.role =='Admin'){
             res.status(401).send('Can\'t post!');
         } 
           else {
-            if(req.params.userId == req.user.id){
+            console.log(req.user);
             const newReport =  await Expense_report.create({
               userId: req.user.userId,
               type: req.body.type,
@@ -70,11 +74,11 @@ router.post('/', verifyUser,  async (req, res) => {
           });
            const cleanReport = await getCleanReport(newReport.id);
            res.json(cleanReport);
-        }
       }
     }
         catch(err){
-          res.json({msg: err.errors[0].message});
+          console.log(err);
+          res.json({msg: err});
         }
 });
 
