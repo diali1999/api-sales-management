@@ -104,6 +104,27 @@ router.delete('/:userId', verifyAdmin, async (req, res) => {
 
 router.put('/:userId', verifyAdmin, async ( req, res) => {
   try{
+      if(req.body.password){
+        const {error} = passwordValidation({password:req.body.password});
+        if(error) return res.status(400).send(error.details[0].message);
+        bcrypt.hash(req.body.password, saltRounds, async (encryptErr, hashedPassword) => {
+          if (encryptErr){
+            res.json({msg: encryptErr})
+          }
+          else{
+            try{
+              User.update(
+                {hashedPassword: hashedPassword },
+              {
+                where: {id: req.params.userId}
+              }).then(() => res.json({msg: "successfully updated!!"}));
+            }
+          catch(err){
+            res.json({msg: err});
+          }
+        }
+    });
+    }
       User.update(
         req.body ,
       {
