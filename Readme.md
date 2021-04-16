@@ -1,6 +1,6 @@
 # Sales-Management-System
 
-This web-app basically helps to track the activities of the sales personnel and mainly focuses on medium and smalll sized organizations, as there the major lacking is people management.
+This is the backend part of sales-management web-app, which basically helps to track the activities of the sales personnel and mainly focuses on medium and smalll sized organizations, as there the major lacking is people management.
 
 To run this web-app, execute the following steps:
 1. clone the repo or run ``git clone git@github.com:harshitdxt3004/api-sales-management.git`` or ``git clone https://github.com/harshitdxt3004/api-sales-management.git``.
@@ -23,7 +23,7 @@ ACCESS_TOKEN_LIFE=1440
 JWT_SECRET=<any_name>
 NODE_ENV=development
 ```
-7. ## Now make an account on cloudinary and put the following lines inside .env file.
+7. ## Now make an account on CLOUDINARY and put the following lines inside .env file.
 ```
 CLOUDINARY_URL=<url>
 API_KEY=<key>
@@ -31,3 +31,4 @@ API_SECRET=<secret>
 CLOUD_NAME=<name>
 ```
 8. finally run ``npm start`` and you can see "tables created succesfully" message.
+## To connect this web-app with the front-end part, go to this [link](https://github.com/harshitdxt3004/sales-management).
