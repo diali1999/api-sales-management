@@ -36,9 +36,6 @@ const Working_report = sequelize.define('work_report', {
     date:{
         type:DataTypes.DATEONLY,
         allowNull: false,
-        validate:{
-            isBefore: (new Date()).toDateString(),
-        }
     },
     status:{
         type: Sequelize.ENUM,
